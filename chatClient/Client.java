@@ -22,7 +22,7 @@ public class Client
 			System.out.print(str2);
 			user = c.nextLine();
 			out.writeUTF(user);
-			System.out.println(" ");
+			//System.out.println(" ");
 
 			str2 = in.readUTF();
 			//System.out.println("Test " + str2);
@@ -66,7 +66,7 @@ public class Client
 			Thread r = new recvMsg(s);
 			r.start();
 			str1 = "";
-			while(!str1.equals(":quit"))
+			while(!(str1.equals(":quit") || str1.equals(":q")))
 			{
 				//str1 = br.readLine();
 				str1 = c.nextLine();

@@ -89,7 +89,7 @@ class ChatThread extends Thread
 					}
 					else
 					{
-						out.writeUTF("Wrong password, " + i + "tries left");
+						out.writeUTF("Wrong password, " + i + " tries left");
 					}
 				}
 				sDB.close();
@@ -102,17 +102,24 @@ class ChatThread extends Thread
 				sockList.add(s);
 			}
 
-			out.writeUTF("[ [ [   Connected to Server.   ] ] ]");
+			out.writeUTF("[ [ [        Connection established.        ] ] ]\n");
+			out.writeUTF("[ [ [             ***WARNING***             ] ] ]");
+			out.writeUTF("[ [ [  Unsecured Connection, not encrypted. ] ] ]\n");
+			out.writeUTF("[ [ [              ***INFO***               ] ] ]");
+			out.writeUTF("[ [ [     Enter ':quit' or ':q' to quit.    ] ] ]\n");
+
+			broadcast("+++++ " + user + " joined Server. +++++");
 			for(;;)
 			{
 				str1 = in.readUTF();
-				if(str1.equals(":quit"))
+				if(str1.equals(":quit") || str1.equals(":q"))
 					break;
-				broadcast("-->" + str1);
-				System.out.println("-->" + str1);
+				broadcast("--" + user + "\t-->"  + str1);
+				System.out.println("--" + user + "\t-->" +  str1);
 
 			}
 			System.out.println("Client Disconnected");
+			broadcast("----- " + user + " left server. -----");
 			in.close();
 			out.close();
 			s.close();
