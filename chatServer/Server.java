@@ -6,6 +6,9 @@ public class Server
 {
 	public static void main(String[] args)
 	{
+		ArrayList<Socket> sockList = new ArrayList<Socket>();
+		ArrayList<String> userList = new ArrayList<String>();
+
 		try
 		{
 			System.out.println("Server Started");
@@ -13,8 +16,9 @@ public class Server
 			for(;;)
 			{
 				Socket s = ss.accept();
+				sockList.add(s);
 				System.out.println("New connection established.");
-				Thread t = new ChatThread(s);
+				Thread t = new ChatThread(s, sockList);
 				t.start();
 			}
 			//ss.close();
@@ -29,9 +33,11 @@ public class Server
 class ChatThread extends Thread
 {
 	Socket s;
-	public ChatThread(Socket s)
+	ArrayList<Socket> sockList;
+	public ChatThread(Socket s, ArrayList<Socket> sockList)
 	{
 		this.s = s;
+		this.sockList = sockList;
 	}
 	public void run()
 	{
@@ -42,12 +48,13 @@ class ChatThread extends Thread
 
 			String str1="";
 
-			out.writeUTF("Connected to Server.");
+			out.writeUTF("[ [ [   Connected to Server.   ] ] ]");
 			for(;;)
 			{
 				str1 = in.readUTF();
 				if(str1.equals(":quit"))
 					break;
+				broadcast("-->" + str1);
 				System.out.println("-->" + str1);
 
 			}
@@ -59,6 +66,23 @@ class ChatThread extends Thread
 		catch(Exception e)
 		{
 			System.out.println(e);
+		}
+	}
+	public void broadcast(String str)
+	{
+		Iterator itr = sockList.listIterator();
+		while(itr.hasNext())
+		{
+			try
+			{
+				Socket sock = (Socket)itr.next();
+				DataOutputStream oBC = new DataOutputStream(sock.getOutputStream());
+				oBC.writeUTF(str);
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
 		}
 	}
 }
