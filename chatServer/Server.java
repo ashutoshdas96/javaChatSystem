@@ -113,7 +113,7 @@ class ChatThread extends Thread
 			out.writeUTF("[ [ [     Enter ':quit' or ':q' to quit.    ] ] ]\n");
 			out.writeUTF("[ [ [Enter ':help' for list of all commands.] ] ]\n");
 
-			broadcast("+++++ " + user + " joined Server. +++++");
+			broadcast("+++++ " + user + " joined Server. +++++", sockList);
 
 			String strOut;
 			String cmd;
@@ -121,7 +121,8 @@ class ChatThread extends Thread
 			for(;;)
 			{
 				str1 = in.readUTF();
-				cmd = str1;
+				String[] res = str1.split("\\s");
+				cmd = res[0];
 				if(cmd.equals(":quit") || cmd.equals(":q"))
 					break;
 				if(cmd.equals(":help") || cmd.equals(":h"))
@@ -134,7 +135,7 @@ class ChatThread extends Thread
 				}
 				if(cmd.equals("@showlist") || cmd.equals("@sl"))
 				{
-					strOut = "=== ";
+					strOut = "=== Available users";
 					Iterator litr = userList.listIterator();
 					while(litr.hasNext())
 					{
@@ -146,14 +147,47 @@ class ChatThread extends Thread
 					out.writeUTF(strOut);
 					continue;
 				}
+				if(cmd.equals("@connect"))
+				{
+					//Create private broadcast.
+					ArrayList<Socket> pList = new ArrayList<Socket>();
+					int count = 0;
+					for(int x=0; x<res.length;x++)
+					{
+						Iterator litr = userList.listIterator();
+						count = 0;
+						while(litr.hasNext())
+						{
+						//	System.out.println(res[x]);
+							String strU = (String)litr.next();
+							if(strU.equals(res[x]))
+								pList.add((Socket)sockList.get(count));
+							count++;
+						}
+					}
+					pList.add(s);
+					out.writeUTF("[   Waiting for users to join Private chat.    ]");
+					out.writeUTF("[ Enter ':leave' or ':l' to leave private chat.]");
+					//requestPrivate(pList);
+					for(;;)
+					{
+						str1 = in.readUTF();
+						if(str1.equals(":l") || str1.equals(":leave"))
+						{
+							out.writeUTF("*** ----- " + user + " left private chat");
+							break;
+						}
+						broadcast("***" + user + "\t~" + str1, pList);
+					}
+				}
 
-				broadcast("--" + user + "\t-->"  + str1);
+				broadcast("--" + user + "\t-->"  + str1, sockList);
 				System.out.println("--" + user + "\t-->" +  str1);
 			}
 			System.out.println("Client Disconnected");
 			//Solve me . . .
 			//If arraylist is really a list, then remove the user from that.
-			broadcast("----- " + user + " left server. -----");
+			broadcast("----- " + user + " left server. -----", sockList);
 			in.close();
 			out.close();
 			s.close();
@@ -163,7 +197,7 @@ class ChatThread extends Thread
 			System.out.println(e);
 		}
 	}
-	public void broadcast(String str)
+	public void broadcast(String str, ArrayList<Socket> sockList)
 	{
 		Iterator itr = sockList.listIterator();
 		while(itr.hasNext())
