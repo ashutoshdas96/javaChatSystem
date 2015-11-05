@@ -16,11 +16,56 @@ public class Client
 
 			Scanner c = new Scanner(System.in);
 
-			String str1="", str2="";
+			String str1="", str2="", user="", passwd="";
+			int i=0;
 			str2 = in.readUTF();
-			System.out.println(str2);
+			System.out.print(str2);
+			user = c.nextLine();
+			out.writeUTF(user);
+			System.out.println(" ");
+
+			str2 = in.readUTF();
+			//System.out.println("Test " + str2);
+			if(str2.equals("userNA"))
+			{
+				System.out.println("Invalid user");
+				s.close();
+				return;
+			}
+			else
+			{
+				for(i=2;i>=0;i--)
+				{
+					//System.out.println("Test before read");
+					str1 = in.readUTF();
+					//System.out.println("Test text" + str1);
+					System.out.print(str1);
+					passwd = c.nextLine();
+					out.writeUTF(passwd);
+					System.out.println(" ");
+					str1 = in.readUTF();
+					if(str1.equals("authSuccess"))
+					{
+						System.out.println("Authenticated.");
+						break;
+					}
+					else
+					{
+						System.out.println(str1);
+					}
+				}
+				if(i<0)
+				{
+					System.out.println("3 Unsuccessful attempts.");
+					System.out.println("Disconnecting...");
+					s.close();
+					return;
+				}
+			}
+
 			Thread r = new recvMsg(s);
 			r.start();
+			str1 = "";
 			while(!str1.equals(":quit"))
 			{
 				//str1 = br.readLine();
