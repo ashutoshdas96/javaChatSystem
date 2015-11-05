@@ -17,7 +17,7 @@ public class Server
 			{
 				Socket s = ss.accept();
 				System.out.println("New connection established.");
-				Thread t = new ChatThread(s, sockList);
+				Thread t = new ChatThread(s, sockList, userList);
 				t.start();
 			}
 			//ss.close();
@@ -37,10 +37,12 @@ class ChatThread extends Thread
 	private String passwdDB;
 	Socket s;
 	ArrayList<Socket> sockList;
-	public ChatThread(Socket s, ArrayList<Socket> sockList)
+	ArrayList<String> userList;
+	public ChatThread(Socket s, ArrayList<Socket> sockList, ArrayList<String> userList)
 	{
 		this.s = s;
 		this.sockList = sockList;
+		this.userList = userList;
 	}
 	public void run()
 	{
@@ -99,7 +101,9 @@ class ChatThread extends Thread
 					s.close();
 					return;
 				}
+				//Client authenticated. Add to list..
 				sockList.add(s);
+				userList.add(user);
 			}
 
 			out.writeUTF("[ [ [        Connection established.        ] ] ]\n");
@@ -107,18 +111,48 @@ class ChatThread extends Thread
 			out.writeUTF("[ [ [  Unsecured Connection, not encrypted. ] ] ]\n");
 			out.writeUTF("[ [ [              ***INFO***               ] ] ]");
 			out.writeUTF("[ [ [     Enter ':quit' or ':q' to quit.    ] ] ]\n");
+			out.writeUTF("[ [ [Enter ':help' for list of all commands.] ] ]\n");
 
 			broadcast("+++++ " + user + " joined Server. +++++");
+
+			String strOut;
+			String cmd;
+
 			for(;;)
 			{
 				str1 = in.readUTF();
-				if(str1.equals(":quit") || str1.equals(":q"))
+				cmd = str1;
+				if(cmd.equals(":quit") || cmd.equals(":q"))
 					break;
+				if(cmd.equals(":help") || cmd.equals(":h"))
+				{
+					out.writeUTF("=== '@showlist' or '@sl'  : Show all online users.");
+					out.writeUTF("=== '@connect <user1> <user2> ...': Send Private message to specified users. ");
+					out.writeUTF("=== ':help'     or ':h'   : Show this list of all available command");
+					out.writeUTF("=== ':quit'     or ':q'   : Disconnect from server");
+					continue;
+				}
+				if(cmd.equals("@showlist") || cmd.equals("@sl"))
+				{
+					strOut = "=== ";
+					Iterator litr = userList.listIterator();
+					while(litr.hasNext())
+					{
+						String strU = (String)litr.next();
+						strOut = strOut + ", " + strU;
+					}
+					strOut = strOut + ".";
+					System.out.println(strOut);
+					out.writeUTF(strOut);
+					continue;
+				}
+
 				broadcast("--" + user + "\t-->"  + str1);
 				System.out.println("--" + user + "\t-->" +  str1);
-
 			}
 			System.out.println("Client Disconnected");
+			//Solve me . . .
+			//If arraylist is really a list, then remove the user from that.
 			broadcast("----- " + user + " left server. -----");
 			in.close();
 			out.close();
