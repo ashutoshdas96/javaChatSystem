@@ -152,8 +152,10 @@ class ChatThread extends Thread
 					//Create private broadcast.
 					ArrayList<Socket> pList = new ArrayList<Socket>();
 					int count = 0;
-					for(int x=0; x<res.length;x++)
+					strOut = user + " ";
+					for(int x=1; x<res.length;x++)
 					{
+						strOut = strOut + ", " + res[x];
 						Iterator litr = userList.listIterator();
 						count = 0;
 						while(litr.hasNext())
@@ -165,10 +167,13 @@ class ChatThread extends Thread
 							count++;
 						}
 					}
-					pList.add(s);
 					out.writeUTF("[   Waiting for users to join Private chat.    ]");
 					out.writeUTF("[ Enter ':leave' or ':l' to leave private chat.]");
 					//requestPrivate(pList);
+					broadcast("*** === " + user + " want to have private chat with " + strOut, pList);
+					broadcast("*** === Enter '@connect <user1> <user2> ...' to reply to one or more ", pList);
+
+					pList.add(s);
 					for(;;)
 					{
 						str1 = in.readUTF();
