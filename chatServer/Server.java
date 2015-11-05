@@ -179,11 +179,15 @@ class ChatThread extends Thread
 						str1 = in.readUTF();
 						if(str1.equals(":l") || str1.equals(":leave"))
 						{
-							out.writeUTF("*** ----- " + user + " left private chat");
+							out.writeUTF("*** ----- You left private chat, Now the msg will be Broadcasted to all");
 							break;
 						}
 						broadcast("***" + user + "\t~" + str1, pList);
 					}
+				}
+				if(str1.equals(":l") || str1.equals(":leave"))
+				{
+					continue;
 				}
 
 				broadcast("--" + user + "\t-->"  + str1, sockList);
