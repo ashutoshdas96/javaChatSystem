@@ -74,6 +74,12 @@ public class Client
 			{
 				//str1 = br.readLine();
 				str1 = c.nextLine();
+				/*
+				 *erase whole line: \33[2K
+				 * and for move cursor
+				 * to previous line: \33[1A
+				 *
+				*/
 				System.out.print("\33[1A\33[2K");
 				if(!(str1.isEmpty()))
 				{
