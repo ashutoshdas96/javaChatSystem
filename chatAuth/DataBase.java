@@ -32,7 +32,7 @@ class AuthThread extends Thread
 	Socket s;
 
 	private String user;
-	private String passwd;
+	private char[] passwd;
 	private String sql;
 
 	public AuthThread(Socket s)
@@ -82,10 +82,11 @@ class AuthThread extends Thread
 			else
 			{
 				rs.next();
-				passwd = rs.getString("passwd");
+				passwd = (rs.getString("passwd")).toCharArray();
 				System.out.println("Psswd extracted");
 				out.writeUTF("userA");
-				out.writeUTF(passwd);
+				out.writeUTF(String.valueOf(passwd));
+				java.util.Arrays.fill(passwd, ' ');
 			}
 
 

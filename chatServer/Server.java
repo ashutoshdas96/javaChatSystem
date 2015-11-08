@@ -33,8 +33,8 @@ class ChatThread extends Thread
 {
 	private int i;
 	private String user;
-	private String passwd;
-	private String passwdDB;
+	private char[] passwd;
+	private char[] passwdDB;
 	Socket s;
 	ArrayList<Socket> sockList;
 	ArrayList<String> userList;
@@ -59,7 +59,6 @@ class ChatThread extends Thread
 
 			String str1="";
 
-			out.writeUTF("User: ");
 			user = in.readUTF();
 
 			outDB.writeUTF(user);
@@ -77,16 +76,17 @@ class ChatThread extends Thread
 			else if(str1.equals("userA"))
 			{
 				out.writeUTF(str1);
-				passwdDB = inDB.readUTF();
+				passwdDB = (inDB.readUTF()).toCharArray();
 				System.out.println("Auth Detail from DB");
 				for(i=2;i>=0;i--)
 				{
-					out.writeUTF("Password: ");
 					System.out.println("waiting for user to enter passwd");
-					passwd = in.readUTF();
-					if(passwdDB.equals(passwd))
+					passwd = (in.readUTF()).toCharArray();
+					if(Arrays.equals(passwdDB, passwd))
 					{
 						out.writeUTF("authSuccess");
+						java.util.Arrays.fill(passwd, ' ');
+						java.util.Arrays.fill(passwdDB, ' ');
 						break;
 					}
 					else
