@@ -75,8 +75,11 @@ public class Client
 				//str1 = br.readLine();
 				str1 = c.nextLine();
 				System.out.print("\33[1A\33[2K");
-				out.writeUTF(str1);
-				out.flush();
+				if(!(str1.isEmpty()))
+				{
+					out.writeUTF(str1);
+					out.flush();
+				}
 			}
 			r.interrupt();
 			out.close();
