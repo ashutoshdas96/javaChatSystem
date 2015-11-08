@@ -32,6 +32,7 @@ public class Server
 
 class ChatThread extends Thread
 {
+	public static final String ANSI_BOLD = "\u001b[1m";
 	public static final String ANSI_RESET = "\u001B[0m";
 	//public static final String ANSI_BLACK = "\u001B[30m";
 	public static final String ANSI_RED = "\u001B[31m";
@@ -117,7 +118,7 @@ class ChatThread extends Thread
 				userList.add(user);
 			}
 
-			out.writeUTF(ANSI_PURPLE + "[ [ [        Connection established.        ] ] ]\n");
+			out.writeUTF(ANSI_BOLD + ANSI_PURPLE + "[ [ [        Connection established.        ] ] ]\n");
 			out.writeUTF("[ [ [             ***WARNING***             ] ] ]");
 			out.writeUTF("[ [ [  Unsecured Connection, not encrypted. ] ] ]\n");
 			out.writeUTF("[ [ [              ***INFO***               ] ] ]");

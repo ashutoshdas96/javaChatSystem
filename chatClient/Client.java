@@ -74,6 +74,7 @@ public class Client
 			{
 				//str1 = br.readLine();
 				str1 = c.nextLine();
+				System.out.print("\33[1A\33[2K");
 				out.writeUTF(str1);
 				out.flush();
 			}
