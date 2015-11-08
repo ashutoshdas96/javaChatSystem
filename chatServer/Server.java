@@ -2,6 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+
 public class Server
 {
 	public static void main(String[] args)
@@ -31,6 +32,16 @@ public class Server
 
 class ChatThread extends Thread
 {
+	public static final String ANSI_RESET = "\u001B[0m";
+	//public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	//public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_PURPLE = "\u001B[35m";
+	//public static final String ANSI_CYAN = "\u001B[36m";
+	//public static final String ANSI_WHITE = "\u001B[37m";
+
 	private int i;
 	private String user;
 	private char[] passwd;
@@ -106,14 +117,14 @@ class ChatThread extends Thread
 				userList.add(user);
 			}
 
-			out.writeUTF("[ [ [        Connection established.        ] ] ]\n");
+			out.writeUTF(ANSI_PURPLE + "[ [ [        Connection established.        ] ] ]\n");
 			out.writeUTF("[ [ [             ***WARNING***             ] ] ]");
 			out.writeUTF("[ [ [  Unsecured Connection, not encrypted. ] ] ]\n");
 			out.writeUTF("[ [ [              ***INFO***               ] ] ]");
 			out.writeUTF("[ [ [     Enter ':quit' or ':q' to quit.    ] ] ]\n");
-			out.writeUTF("[ [ [Enter ':help' for list of all commands.] ] ]\n");
+			out.writeUTF("[ [ [Enter ':help' for list of all commands.] ] ]\n" + ANSI_RESET);
 
-			broadcast("+++++ " + user + " joined Server. +++++", sockList);
+			broadcast(ANSI_GREEN + "+++++ " + user + " joined Server. +++++" + ANSI_RESET, sockList);
 
 			String strOut;
 			String cmd;
@@ -179,10 +190,10 @@ class ChatThread extends Thread
 						str1 = in.readUTF();
 						if(str1.equals(":l") || str1.equals(":leave"))
 						{
-							out.writeUTF("*** ----- You left private chat, Now the msg will be Broadcasted to all");
+							out.writeUTF(ANSI_RED + "*** ----- You left private chat, Now the msg will be Broadcasted to all ----- ***" + ANSI_RESET);
 							break;
 						}
-						broadcast("***" + user + "\t~" + str1, pList);
+						broadcast(ANSI_BLUE + "***" + user + "\t~ " + ANSI_RESET + str1, pList);
 					}
 				}
 				if(str1.equals(":l") || str1.equals(":leave"))
@@ -190,13 +201,13 @@ class ChatThread extends Thread
 					continue;
 				}
 
-				broadcast("--" + user + "\t-->"  + str1, sockList);
+				broadcast(ANSI_BLUE + "--" + user + "\t--> " + ANSI_RESET + str1, sockList);
 				System.out.println("--" + user + "\t-->" +  str1);
 			}
 			System.out.println("Client Disconnected");
 			//Solve me . . .
 			//If arraylist is really a list, then remove the user from that.
-			broadcast("----- " + user + " left server. -----", sockList);
+			broadcast(ANSI_RED + "----- " + user + " left server. -----" + ANSI_RESET , sockList);
 			in.close();
 			out.close();
 			s.close();
