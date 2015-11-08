@@ -102,7 +102,7 @@ class ChatThread extends Thread
 					}
 					else
 					{
-						out.writeUTF("Wrong password, " + i + " tries left");
+						out.writeUTF(ANSI_RED + "Wrong password, " + i + " tries left" + ANSI_RESET);
 					}
 				}
 				sDB.close();
@@ -178,11 +178,11 @@ class ChatThread extends Thread
 							count++;
 						}
 					}
-					out.writeUTF("[   Waiting for users to join Private chat.    ]");
-					out.writeUTF("[ Enter ':leave' or ':l' to leave private chat.]");
+					out.writeUTF(ANSI_PURPLE + "[   Waiting for users to join Private chat.    ]");
+					out.writeUTF("[ Enter ':leave' or ':l' to leave private chat.]" + ANSI_RESET);
 					//requestPrivate(pList);
-					broadcast("*** === " + user + " want to have private chat with " + strOut, pList);
-					broadcast("*** === Enter '@connect <user1> <user2> ...' to reply to one or more ", pList);
+					broadcast(ANSI_PURPLE + "*** === " + user + " want to have private chat with " + strOut, pList);
+					broadcast("*** === Enter '@connect <user1> <user2> ...' to reply to one or more " + ANSI_RESET, pList);
 
 					pList.add(s);
 					for(;;)
@@ -201,8 +201,8 @@ class ChatThread extends Thread
 					continue;
 				}
 
-				broadcast(ANSI_BLUE + "--" + user + "\t--> " + ANSI_RESET + str1, sockList);
-				System.out.println("--" + user + "\t-->" +  str1);
+				broadcast(ANSI_BLUE + "-- " + user + "\t--> " + ANSI_RESET + str1, sockList);
+				System.out.println("-- " + user + "\t-->" +  str1);
 			}
 			System.out.println("Client Disconnected");
 			//Solve me . . .
